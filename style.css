@@ -1,0 +1,66 @@
+body{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+button{
+    background-color: rgb(78, 177, 81);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.city-input, .postal-code-input{
+    padding: 10px;
+    border-radius: 5px;
+    border-style: solid;
+    height: 20px;
+}
+
+.show-trees-button{
+    padding: 11px;
+    font: 17px Arial, Helvetica, sans-serif, bold;
+}
+
+.show-trees-button:hover{
+    background-color: rgb(110, 189, 112);
+    transition: 0.15s;
+}
+
+.input-container{
+    justify-content: center;
+    align-items: center;
+}
+
+.trees-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tree-name{
+    color: white;
+    margin-left: 20px;
+}
+
+.tree-photo-container{
+    background-color: rgb(78, 177, 81);   
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.tree-photo{
+    max-height:300px;
+    max-width:300px;
+    height:auto;
+    width:auto;
+    margin: 10px;
+    border-radius: 10px;
+
+    cursor: pointer;
+}
