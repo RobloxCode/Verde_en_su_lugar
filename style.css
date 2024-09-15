@@ -5,7 +5,6 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: gray;
 }
 
 button{
@@ -17,15 +16,15 @@ button{
 }
 
 .city-input, .postal-code-input{
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
     border-style: solid;
     height: 20px;
 }
 
 .show-trees-button{
-    padding: 11px;
-    font: 17px Arial, Helvetica, sans-serif, bold;
+    padding: 17px;
+    font: 18px Arial, Helvetica, sans-serif, bold;
 }
 
 .show-trees-button:hover{
@@ -39,7 +38,6 @@ button{
 }
 
 .trees-container{
-    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -47,6 +45,7 @@ button{
 .tree-name{
     color: white;
     margin-left: 20px;
+    padding-top: 10px;
 }
 
 .tree-photo-container{
@@ -62,6 +61,9 @@ button{
     width:auto;
     margin: 10px;
     border-radius: 10px;
+    border-color: rgb(255, 255, 255);
+    border-style: solid;
+    box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
 
     cursor: pointer;
 }
