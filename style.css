@@ -51,7 +51,8 @@ button{
 .tree-photo-container{
     background-color: rgb(78, 177, 81);   
     border-radius: 10px;
-    margin: 10px;
+    margin: 10px 10px 10px 100px;
+    width: 325px;
 }
 
 .tree-photo{
