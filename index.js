@@ -1,5 +1,29 @@
+import { codigoPostalArr } from "./tree-photos/data/codigosPostales.js";
+
+function isValidCode(code) {
+  return code.length === 5;
+}
+
+function getCode() {
+  return document.querySelector('.postal-code-input').value;
+}
+
 function showResults() {
 
+  const code = getCode();
+  
+  // is the code is not valid
+  if(!isValidCode(code)) {
+
+    const text = document.createElement('h1');
+    text.innerText = 'Codigo postal no valido!!';
+
+    document.body.append(text);
+
+    return; // the next code wont execute
+  }
+
+  // only appending it once
   if(!document.querySelector('.result-text')) {
 
     const treesContainer = document.querySelector('.trees-container');
@@ -32,7 +56,8 @@ function showResults() {
     treesContainer.append(div1);
     treesContainer.append(div2);
     treesContainer.append(div3);
-    
+
+    // adding the event listener here cuz we make the images in here
     document.querySelector('.photo-1').addEventListener('click', () => {
       takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-de-jacaranda/');
     });
