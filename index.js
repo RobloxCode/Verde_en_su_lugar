@@ -1,4 +1,4 @@
-import { codigoPostalArr } from "./tree-photos/data/codigosPostales.js";
+import { codigoPostalArr } from "./data/codigoPostalJson.js";
 
 function isValidCode(code) {
   return code.length === 5;
