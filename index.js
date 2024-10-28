@@ -1,7 +1,23 @@
 import { codigoPostalArr } from "./data/codigoPostalJson.js";
+import { ciudades } from "./data/ciudades.js";
 
 function isValidCode(code) {
   return code.length === 5;
+}
+
+function isCityValid(city) {
+  
+  for(let i = 0; i < ciudades.length; i++) {
+    if(ciudades[i] == city.toLowerCase()) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getCity() {
+  return document.querySelector('.city-input').value; 
 }
 
 function getCode() {
@@ -11,10 +27,19 @@ function getCode() {
 function showResults() {
 
   const code = getCode();
-  
+  const city = getCity();
+
+  if(!isCityValid(city)) {
+    const text = document.createElement('h1');
+    text.innerText = 'Ciudad no valida!!';
+
+    document.body.append(text);
+
+    return; // the next code wont execute
+  }
+
   // is the code is not valid
   if(!isValidCode(code)) {
-
     const text = document.createElement('h1');
     text.innerText = 'Codigo postal no valido!!';
 
@@ -58,16 +83,19 @@ function showResults() {
     treesContainer.append(div3);
 
     // adding the event listener here cuz we make the images in here
-    document.querySelector('.photo-1').addEventListener('click', () => {
-      takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-de-jacaranda/');
+    document.querySelector('.photo-1')
+      .addEventListener('click', () => {
+        takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-de-jacaranda/');
     });
     
-    document.querySelector('.photo-2').addEventListener('click', () => {
-      takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-fresno/');
+    document.querySelector('.photo-2')
+      .addEventListener('click', () => {
+        takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-fresno/');
     });
     
-    document.querySelector('.photo-3').addEventListener('click', () => {
-      takeToInfoPage('https://nuestraflora.com/c-arboles/tipos-de-eucalipto/');
+    document.querySelector('.photo-3')
+      .addEventListener('click', () => {
+        takeToInfoPage('https://nuestraflora.com/c-arboles/tipos-de-eucalipto/');
     });
 
   }
@@ -77,4 +105,19 @@ function takeToInfoPage(link) {
   window.open(link, '_blank');
 }
 
-document.querySelector('.show-trees-button').addEventListener('click', showResults);
+document.querySelector('.show-trees-button')
+  .addEventListener('click', showResults);
+
+document.querySelector('.city-input')
+  .addEventListener('keydown', event => {
+    if(event.key == 'Enter') {
+      showResults();
+    }
+  });
+
+document.querySelector('.postal-code-input')
+  .addEventListener('keydown', event => {
+    if(event.key == 'Enter') {
+      showResults();
+    }
+  });
