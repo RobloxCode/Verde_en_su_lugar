@@ -1,5 +1,73 @@
-import { codigoPostalArr } from "./data/codigoPostalJson.js";
 import { ciudades } from "./data/ciudades.js";
+import { getCelsius } from "./data/kelvin-to-celsius.js";
+
+// probably will have to change the ApiKey some othe day
+const apiKey = 'b7b2f38996720a53c2c77ad4542b0d2c';
+
+async function getWeatherData() {
+  
+  const city = getCity();
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+
+  try {
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      const text = document.createElement('h1');
+      text.innerText = 'Ciudad no valida!!';
+
+      document.body.append(text);
+
+      throw new Error('Could not fetch weather data');
+    }
+
+    const data = await response.json();
+
+    return data;
+
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+async function displayWeatherInfo() {
+  const weatherData = await getWeatherData();
+  console.log(weatherData);
+
+  const div = document.createElement('div');
+  div.classList.add('data-container');
+  div.innerHTML = `
+
+    <div class="data-container">
+
+      <div class="weather-info-container">
+
+        <img src="tree-photos/flag-photo/cloud.png" class="cloud-image">
+
+        <div>
+          <p class="city-name">${weatherData.name} MX <img src="tree-photos/flag-photo/mx-flag.png" alt=""></p>
+        </div>
+        
+
+        <div class="temperature-info-container">
+          <p class="temperature-container">${Math.round(getCelsius(weatherData.main.temp))}°C</p>
+          <p class="info-container">temperatura desde ${getCelsius(weatherData.main.temp_min)} hasta ${Math.round(getCelsius(weatherData.main.temp_max))}°, viento ${weatherData.wind.speed} m/s. Nubes ${weatherData.clouds.all}%</p>
+        </div>
+
+        <div>
+          <p class="coords-container">cordenadas geo. [${weatherData.coord.lat} , ${weatherData.coord.lon}]</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+  const divInfo = document.querySelector('.weather-info-container-div');
+  divInfo.append(div);  
+
+}
 
 function isValidCode(code) {
   return code.length === 5;
@@ -105,19 +173,22 @@ function takeToInfoPage(link) {
   window.open(link, '_blank');
 }
 
-document.querySelector('.show-trees-button')
-  .addEventListener('click', showResults);
+// NEED TO FIX THE ISSUE OF APPEARING THE TREES PHOTOS FIRST //
+document.querySelector('.show-trees-button').addEventListener('click', async () => {
+  await displayWeatherInfo();
+  showResults();
+});
 
-document.querySelector('.city-input')
-  .addEventListener('keydown', event => {
-    if(event.key == 'Enter') {
-      showResults();
-    }
-  });
+document.querySelector('.city-input').addEventListener('keydown', async event => {
+  if(event.key == 'Enter') {
+    await displayWeatherInfo();
+    showResults();
+  }
+});
 
-document.querySelector('.postal-code-input')
-  .addEventListener('keydown', event => {
-    if(event.key == 'Enter') {
-      showResults();
-    }
-  });
+document.querySelector('.postal-code-input').addEventListener('keydown', async event => {
+  if(event.key == 'Enter') {
+    await displayWeatherInfo();
+    showResults();
+  }
+});
