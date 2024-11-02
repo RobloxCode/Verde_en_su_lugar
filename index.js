@@ -1,5 +1,6 @@
 import { ciudades } from "./data/ciudades.js";
 import { getCelsius } from "./data/kelvin-to-celsius.js";
+import { trees } from "./data/trees.js";
 
 // probably will have to change the ApiKey some othe day
 const apiKey = 'b7b2f38996720a53c2c77ad4542b0d2c';
@@ -32,7 +33,6 @@ async function getWeatherData() {
 
 async function displayWeatherInfo() {
   const weatherData = await getWeatherData();
-  console.log(weatherData);
 
   const div = document.createElement('div');
   div.classList.add('data-container');
@@ -67,7 +67,54 @@ async function displayWeatherInfo() {
   const divInfo = document.querySelector('.weather-info-container-div');
   divInfo.append(div);  
 
+  displayTreesToPlantInfo();
+
 }
+
+function getTreeMinTemperature(numTree) {
+  return trees[numTree].temp_min;
+}
+
+function getTreeMaxTemperature(numTree) {
+  return trees[numTree].temp_max;
+}
+
+async function getCityMinTemperature() {
+  const weatherData = await getWeatherData();
+  return weatherData.main.temp_min;
+}
+
+async function getCityMaxTemperature() {
+  const weatherData = await getWeatherData();
+  return weatherData.main.temp_max;
+}
+
+async function getTreesToPlant() {
+  let treesToPlant = [];
+
+  const cityMinTemperature = getCelsius(await getCityMinTemperature());
+  const cityMaxTemperature = Math.round(getCelsius(await getCityMaxTemperature()));
+
+  for(let i = 0; i < trees.length; i++) {
+    
+    let treeMinTemperature = getTreeMinTemperature(i);
+    let treeMaxTemperature = getTreeMaxTemperature(i);
+
+    // asegurar que el arbol pueda soportar las temperaturas minimas y maximas
+    if(treeMinTemperature > cityMinTemperature || treeMaxTemperature < cityMaxTemperature) {
+      treesToPlant.push(trees[i].nombre);
+    }
+
+  }
+
+  return treesToPlant;
+
+}
+
+async function displayTreesToPlantInfo() {
+  const treesToPlant = await getTreesToPlant();
+  //console.log(treesToPlant);
+} 
 
 function isValidCode(code) {
   return code.length === 5;
@@ -92,7 +139,7 @@ function getCode() {
   return document.querySelector('.postal-code-input').value;
 }
 
-function showResults() {
+async function showTreeResults() {
 
   const code = getCode();
   const city = getCity();
@@ -116,57 +163,35 @@ function showResults() {
     return; // the next code wont execute
   }
 
-  // only appending it once
-  if(!document.querySelector('.result-text')) {
+  const treesToPlant = await getTreesToPlant();
 
-    const treesContainer = document.querySelector('.trees-container');
-    const h1 = document.createElement('h1');
-    h1.classList.add('result-text');
-    h1.innerText = 'En tu localidad puedes plantar:';
+  let treesToPlantLower = treesToPlant.map(word => word.toLowerCase());
 
-    const div1 = document.createElement('div');
-    div1.classList.add('tree-photo-container');
-    div1.innerHTML = `
-      <h2 class="tree-name">Jacaranda</h2>
-      <img src="tree-photos/jacaranda.jpg" class="tree-photo photo-1">
+  const treesContainer = document.querySelector('.trees-container');
+
+  const text = document.createElement('h1');
+  text.innerText = 'En tu localida puedes plantar';
+  text.classList.add('result-text');
+  treesContainer.append(text);
+
+  for(let i = 0; i < treesToPlant.length; i++) {
+    const div = document.createElement('div');
+
+    div.innerHTML = `
+
+      <div class="trees-to-plant">
+        
+        <p class="tree-name">${treesToPlant[i]}</p>
+
+        <img src="tree-photos/trees-imgs/${treesToPlantLower[i]}.jpg" class="tree-img">
+
+      </div>
+
     `;
 
-    const div2 = document.createElement('div');
-    div2.classList.add('tree-photo-container');
-    div2.innerHTML = `
-      <h2 class="tree-name">Fresno</h2>
-      <img src="tree-photos/fresno.jpg" class="tree-photo photo-2">
-    `;
-
-    const div3 = document.createElement('div');
-    div3.classList.add('tree-photo-container');
-    div3.innerHTML = `
-      <h2 class="tree-name">Eucalipto</h2>
-      <img src="tree-photos/eucalipto.jpg" class="tree-photo photo-3">
-    `;
-
-    treesContainer.append(h1);
-    treesContainer.append(div1);
-    treesContainer.append(div2);
-    treesContainer.append(div3);
-
-    // adding the event listener here cuz we make the images in here
-    document.querySelector('.photo-1')
-      .addEventListener('click', () => {
-        takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-de-jacaranda/');
-    });
-    
-    document.querySelector('.photo-2')
-      .addEventListener('click', () => {
-        takeToInfoPage('https://nuestraflora.com/c-arboles/arbol-fresno/');
-    });
-    
-    document.querySelector('.photo-3')
-      .addEventListener('click', () => {
-        takeToInfoPage('https://nuestraflora.com/c-arboles/tipos-de-eucalipto/');
-    });
-
+    treesContainer.append(div);
   }
+
 }
 
 function takeToInfoPage(link) {
@@ -176,19 +201,19 @@ function takeToInfoPage(link) {
 // NEED TO FIX THE ISSUE OF APPEARING THE TREES PHOTOS FIRST //
 document.querySelector('.show-trees-button').addEventListener('click', async () => {
   await displayWeatherInfo();
-  showResults();
+  showTreeResults();
 });
 
 document.querySelector('.city-input').addEventListener('keydown', async event => {
   if(event.key == 'Enter') {
     await displayWeatherInfo();
-    showResults();
+    showTreeResults();
   }
 });
 
 document.querySelector('.postal-code-input').addEventListener('keydown', async event => {
   if(event.key == 'Enter') {
     await displayWeatherInfo();
-    showResults();
+    showTreeResults();
   }
 });

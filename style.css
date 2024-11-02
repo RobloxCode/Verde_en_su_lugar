@@ -38,36 +38,10 @@ button{
     align-items: center;
 }
 
-.trees-container{
-    align-items: center;
-    justify-content: center;
-}
-
 .tree-name{
     color: white;
     margin-left: 20px;
     padding-top: 10px;
-}
-
-.tree-photo-container{
-    background-color: rgb(78, 177, 81);   
-    border-radius: 10px;
-    margin: 10px 10px 10px 100px;
-    width: 325px;
-}
-
-.tree-photo{
-    max-height:300px;
-    max-width:300px;
-    height:auto;
-    width:auto;
-    margin: 10px;
-    border-radius: 10px;
-    border-color: rgb(255, 255, 255);
-    border-style: solid;
-    box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
-
-    cursor: pointer;
 }
 
 .cloud-image{
@@ -102,4 +76,32 @@ button{
 
 .info-container{
     margin-left: 10px;
+}
+
+.trees-to-plant{
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    height:440px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(78, 177, 81);
+    border-radius: 9px;
+    margin-bottom: 20px;
+}
+
+.tree-name{
+    columns: white;
+    font-weight: bold;
+    margin-top: -30px;
+    font-size: 25px;
+}
+
+.tree-img{
+    width: 200px;
+    border-color: white;
+    border-style: solid;
+    border-radius: 10px;
+    border-width: 7px;
+    box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
 }
