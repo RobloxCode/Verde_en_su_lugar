@@ -32,7 +32,23 @@ async function getWeatherData() {
 }
 
 async function displayWeatherInfo() {
+  
+  const inputCity = document.querySelector('.city-input');
+  const inputCode = document.querySelector('.postal-code-input');
+
+  if(inputCity.value === "" || inputCode.value === "") {
+    const text = document.createElement('h1');
+    text.innerText = 'debes llenar todos los campos!!';
+    document.body.append(text);
+    return;
+  }
+
   const weatherData = await getWeatherData();
+
+  // checking if the div is already displayed
+  if(document.querySelector('.data-container')) {
+    return;
+  }
 
   const div = document.createElement('div');
   div.classList.add('data-container');
@@ -67,7 +83,6 @@ async function displayWeatherInfo() {
   const divInfo = document.querySelector('.weather-info-container-div');
   divInfo.append(div);  
 
-  displayTreesToPlantInfo();
 
 }
 
@@ -111,11 +126,6 @@ async function getTreesToPlant() {
 
 }
 
-async function displayTreesToPlantInfo() {
-  const treesToPlant = await getTreesToPlant();
-  //console.log(treesToPlant);
-} 
-
 function isValidCode(code) {
   return code.length === 5;
 }
@@ -123,7 +133,7 @@ function isValidCode(code) {
 function isCityValid(city) {
   
   for(let i = 0; i < ciudades.length; i++) {
-    if(ciudades[i] == city.toLowerCase()) {
+    if(ciudades[i] === city.toLowerCase()) {
       return true;
     }
   }
@@ -147,9 +157,7 @@ async function showTreeResults() {
   if(!isCityValid(city)) {
     const text = document.createElement('h1');
     text.innerText = 'Ciudad no valida!!';
-
     document.body.append(text);
-
     return; // the next code wont execute
   }
 
@@ -157,20 +165,22 @@ async function showTreeResults() {
   if(!isValidCode(code)) {
     const text = document.createElement('h1');
     text.innerText = 'Codigo postal no valido!!';
-
     document.body.append(text);
-
     return; // the next code wont execute
+  }
+  
+  const treesContainer = document.querySelector('.trees-container');
+
+  // checking if the results are already displayed
+  if(treesContainer.querySelector('.result-text')) {
+    return;
   }
 
   const treesToPlant = await getTreesToPlant();
-
   let treesToPlantLower = treesToPlant.map(word => word.toLowerCase());
-
-  const treesContainer = document.querySelector('.trees-container');
-
+  
   const text = document.createElement('h1');
-  text.innerText = 'En tu localida puedes plantar';
+  text.innerText = 'En tu localida puedes plantar:';
   text.classList.add('result-text');
   treesContainer.append(text);
 
@@ -194,25 +204,20 @@ async function showTreeResults() {
 
 }
 
-function takeToInfoPage(link) {
-  window.open(link, '_blank');
-}
-
-// NEED TO FIX THE ISSUE OF APPEARING THE TREES PHOTOS FIRST //
 document.querySelector('.show-trees-button').addEventListener('click', async () => {
   await displayWeatherInfo();
   showTreeResults();
 });
 
 document.querySelector('.city-input').addEventListener('keydown', async event => {
-  if(event.key == 'Enter') {
+  if(event.key === 'Enter') {
     await displayWeatherInfo();
     showTreeResults();
   }
 });
 
 document.querySelector('.postal-code-input').addEventListener('keydown', async event => {
-  if(event.key == 'Enter') {
+  if(event.key === 'Enter') {
     await displayWeatherInfo();
     showTreeResults();
   }

@@ -49,13 +49,24 @@ button{
 }
 
 .weather-info-container{
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
+    background-color: rgb(78, 177, 81);
+    border-radius: 10px;
+    border-style: solid;
+    border-color: white;
+    box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
+    padding: 5px;
 }
 
 .city-name{
-    color: rgb(99, 154, 101);
+    color: white;
     font-weight: bold;
+}
+
+.coords-container{
+    color: white;
 }
 
 .temperature-container{
@@ -71,6 +82,7 @@ button{
 
 .temperature-info-container{
     display: flex;
+    color: white;
     align-items: center;
 }
 
