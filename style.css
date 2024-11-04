@@ -1,12 +1,12 @@
 body{
     font-family: Arial, sans-serif;
     margin: 0;
+    padding-top: 85px; 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: rgb(248, 245, 245);
-    margin-top: 85px;
 }
 
 button{
@@ -54,6 +54,7 @@ nav a:hover {
     left: 0px;
     right: 0px;
     height: 50px;
+    z-index: 1000;
 }
 
 .city-input, .postal-code-input{
@@ -156,4 +157,13 @@ nav a:hover {
     border-radius: 10px;
     border-width: 7px;
     box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
+}
+
+.map-container {
+    margin-top: 30px;
+    border-style: solid;
+    color: white;
+    box-shadow: 5px 5px 10px 2px rgb(10 0 0 / .2);
+    height: 500px;
+    width: 700px;
 }

@@ -57,6 +57,7 @@ async function displayWeatherInfo() {
   const maxTemperature = Math.round(getCelsius(weatherData.main.temp_max));
   const wind = weatherData.wind.speed;
   const clouds = weatherData.clouds.all;
+  const coords = [weatherData.coord.lat, weatherData.coord.lon];
 
   const div = document.createElement('div');
   div.classList.add('data-container');
@@ -88,9 +89,10 @@ async function displayWeatherInfo() {
 
   `;
 
+  displayMap(coords);
+
   const divInfo = document.querySelector('.weather-info-container-div');
   divInfo.append(div);  
-
 
 }
 
@@ -155,6 +157,26 @@ function getCity() {
 
 function getCode() {
   return document.querySelector('.postal-code-input').value;
+}
+
+async function displayMap(coords) {
+  // Crea el div para el mapa dinámicamente y configúralo
+  const mapContainer = document.createElement('div');
+  mapContainer.classList.add('map-container');
+  document.body.appendChild(mapContainer);
+
+  // Inicializa el mapa en el div recién creado y céntralo en las coordenadas especificadas
+  const map = L.map(mapContainer).setView(coords, 13);
+
+  // Agrega las teselas de OpenStreetMap al mapa
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Añade un marcador en las coordenadas
+  L.marker(coords).addTo(map)
+      .bindPopup('¡Esta es tu ubicación seleccionada!')
+      .openPopup();
 }
 
 async function showTreeResults() {
