@@ -50,6 +50,14 @@ async function displayWeatherInfo() {
     return;
   }
 
+  const name = weatherData.name;
+  const country = weatherData.sys.country;
+  const temperature = Math.round(getCelsius(weatherData.main.temp));
+  const minTemprerature = getCelsius(weatherData.main.temp_min);
+  const maxTemperature = Math.round(getCelsius(weatherData.main.temp_max));
+  const wind = weatherData.wind.speed;
+  const clouds = weatherData.clouds.all;
+
   const div = document.createElement('div');
   div.classList.add('data-container');
   div.innerHTML = `
@@ -61,13 +69,13 @@ async function displayWeatherInfo() {
         <img src="tree-photos/flag-photo/cloud.png" class="cloud-image">
 
         <div>
-          <p class="city-name">${weatherData.name} MX <img src="tree-photos/flag-photo/mx-flag.png" alt=""></p>
+          <p class="city-name">${name} ${country} <img src="tree-photos/flag-photo/${country.toLowerCase()}-flag.png" alt=""></p>
         </div>
         
 
         <div class="temperature-info-container">
-          <p class="temperature-container">${Math.round(getCelsius(weatherData.main.temp))}°C</p>
-          <p class="info-container">temperatura desde ${getCelsius(weatherData.main.temp_min)} hasta ${Math.round(getCelsius(weatherData.main.temp_max))}°, viento ${weatherData.wind.speed} m/s. Nubes ${weatherData.clouds.all}%</p>
+          <p class="temperature-container">${temperature}°C</p>
+          <p class="info-container">temperatura desde ${minTemprerature} hasta ${maxTemperature}°, viento ${wind} m/s. Nubes ${clouds}%</p>
         </div>
 
         <div>
