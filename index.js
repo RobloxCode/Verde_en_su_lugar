@@ -58,6 +58,8 @@ async function displayWeatherInfo() {
   const wind = weatherData.wind.speed;
   const clouds = weatherData.clouds.all;
   const coords = [weatherData.coord.lat, weatherData.coord.lon];
+  const lat = weatherData.coord.lat;
+  const long = weatherData.coord.lon;
 
   const div = document.createElement('div');
   div.classList.add('data-container');
@@ -73,14 +75,13 @@ async function displayWeatherInfo() {
           <p class="city-name">${name} ${country} <img src="tree-photos/flag-photo/${country.toLowerCase()}-flag.png" alt=""></p>
         </div>
         
-
         <div class="temperature-info-container">
           <p class="temperature-container">${temperature}°C</p>
           <p class="info-container">temperatura desde ${minTemprerature} hasta ${maxTemperature}°, viento ${wind} m/s. Nubes ${clouds}%</p>
         </div>
 
         <div>
-          <p class="coords-container">cordenadas geo. [${weatherData.coord.lat} , ${weatherData.coord.lon}]</p>
+          <p class="coords-container">cordenadas geo. [${lat} , ${long}]</p>
         </div>
 
       </div>
