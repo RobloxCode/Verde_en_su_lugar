@@ -14,11 +14,7 @@ async function getWeatherData() {
     const response = await fetch(apiUrl);
 
     if (!response.ok) {
-      const text = document.createElement('h1');
-      text.innerText = 'Ciudad no valida!!';
-
-      document.body.append(text);
-
+      showError('Ciudad no valida');
       throw new Error('Could not fetch weather data');
     }
 
@@ -31,70 +27,103 @@ async function getWeatherData() {
   }
 }
 
-async function displayWeatherInfo() {
-  
-  const inputCity = document.querySelector('.city-input');
-  const inputCode = document.querySelector('.postal-code-input');
+function showError(message) {
+  let errorContainer = document.querySelector('.error-message');
 
-  if(inputCity.value === "" || inputCode.value === "") {
-    const text = document.createElement('h1');
-    text.innerText = 'debes llenar todos los campos!!';
-    document.body.append(text);
-    return;
+  // Si el contenedor de error no existe, crearlo
+  if (!errorContainer) {
+    errorContainer = document.createElement('div');
+    errorContainer.classList.add('error-message');
+    document.body.appendChild(errorContainer);
   }
+
+  // Actualizar el mensaje de error
+  errorContainer.innerText = message;
+
+  // Añadir estilo de error (opcional)
+  errorContainer.style.color = 'red';
+  errorContainer.style.fontSize = '1.2em';
+
+  // Remover el mensaje después de un tiempo para limpieza automática
+  setTimeout(() => {
+    errorContainer.innerText = '';
+  }, 3000);
+
+}
+
+function displayweatherDataInDOM(name, country, temperature, minTemperature, maxTemperature, wind, clouds, lat, long) {
+
+  let dataContainer = document.querySelector('.data-container');
+
+  // Si el contenedor de datos no existe, lo creamos y añadimos al cuerpo del documento
+  if (!dataContainer) {
+    dataContainer = document.createElement('div');
+    dataContainer.classList.add('data-container');
+    document.body.append(dataContainer);
+  } else {
+    // Si el contenedor existe, limpiamos su contenido antes de agregar nuevos datos
+    dataContainer.innerHTML = "";
+  }
+
+  // Insertar el nuevo contenido de los datos del clima
+  dataContainer.innerHTML = `
+    <div class="weather-info-container">
+      <img src="tree-photos/flag-photo/cloud.png" class="cloud-image">
+      <div>
+        <p class="city-name">${name} ${country} <img src="tree-photos/flag-photo/${country.toLowerCase()}-flag.png" alt=""></p>
+      </div>
+      <div class="temperature-info-container">
+        <p class="temperature-container">${temperature}°C</p>
+        <p class="info-container">temperatura desde ${minTemperature} hasta ${maxTemperature}°, viento ${wind} m/s. Nubes ${clouds}%</p>
+      </div>
+      <div>
+        <p class="coords-container">coordenadas geo. [${lat} , ${long}]</p>
+      </div>
+    </div>
+  `;
+}
+
+function validateInputs() {
+  const city = getCity();
+  const code = getCode();
+
+  if (city === "" || code === "") {
+    showError('Debes llenar todos los campos!!');
+    return false;
+  }
+
+  if (!isCityValid(city)) {
+    showError('Ciudad no válida!!');
+    return false;
+  }
+
+  if (!isValidCode(code)) {
+    showError('Código postal no válido!!');
+    return false;
+  }
+
+  // Si todas las validaciones pasan
+  return true;
+}
+
+async function displayWeatherInfo() {
+  if (!validateInputs()) return;
 
   const weatherData = await getWeatherData();
-
-  // checking if the div is already displayed
-  if(document.querySelector('.data-container')) {
-    return;
-  }
+  if (!weatherData) return;
 
   const name = weatherData.name;
   const country = weatherData.sys.country;
   const temperature = Math.round(getCelsius(weatherData.main.temp));
-  const minTemprerature = getCelsius(weatherData.main.temp_min);
+  const minTemperature = getCelsius(weatherData.main.temp_min);
   const maxTemperature = Math.round(getCelsius(weatherData.main.temp_max));
   const wind = weatherData.wind.speed;
   const clouds = weatherData.clouds.all;
-  const coords = [weatherData.coord.lat, weatherData.coord.lon];
   const lat = weatherData.coord.lat;
   const long = weatherData.coord.lon;
 
-  const div = document.createElement('div');
-  div.classList.add('data-container');
-  div.innerHTML = `
-
-    <div class="data-container">
-
-      <div class="weather-info-container">
-
-        <img src="tree-photos/flag-photo/cloud.png" class="cloud-image">
-
-        <div>
-          <p class="city-name">${name} ${country} <img src="tree-photos/flag-photo/${country.toLowerCase()}-flag.png" alt=""></p>
-        </div>
-        
-        <div class="temperature-info-container">
-          <p class="temperature-container">${temperature}°C</p>
-          <p class="info-container">temperatura desde ${minTemprerature} hasta ${maxTemperature}°, viento ${wind} m/s. Nubes ${clouds}%</p>
-        </div>
-
-        <div>
-          <p class="coords-container">cordenadas geo. [${lat} , ${long}]</p>
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-  displayMap(coords);
-
-  const divInfo = document.querySelector('.weather-info-container-div');
-  divInfo.append(div);  
-
+  displayweatherDataInDOM(name, country, temperature, minTemperature, maxTemperature, wind, clouds, lat, long);
+  displayMap([lat, long]);
 }
 
 function getTreeMinTemperature(numTree) {
@@ -107,12 +136,12 @@ function getTreeMaxTemperature(numTree) {
 
 async function getCityMinTemperature() {
   const weatherData = await getWeatherData();
-  return weatherData.main.temp_min;
+  return weatherData ? weatherData.main.temp_min : null;
 }
 
 async function getCityMaxTemperature() {
   const weatherData = await getWeatherData();
-  return weatherData.main.temp_max;
+  return weatherData ? weatherData.main.temp_max : null;
 }
 
 async function getTreesToPlant() {
@@ -142,14 +171,7 @@ function isValidCode(code) {
 }
 
 function isCityValid(city) {
-  
-  for(let i = 0; i < ciudades.length; i++) {
-    if(ciudades[i] === city.toLowerCase()) {
-      return true;
-    }
-  }
-
-  return false;
+  return ciudades.includes(city.toLowerCase());
 }
 
 function getCity() {
@@ -161,45 +183,36 @@ function getCode() {
 }
 
 async function displayMap(coords) {
-  // Crea el div para el mapa dinámicamente y configúralo
-  const mapContainer = document.createElement('div');
-  mapContainer.classList.add('map-container');
-  document.body.appendChild(mapContainer);
+  let mapContainer = document.querySelector('.map-container');
 
-  // Inicializa el mapa en el div recién creado y céntralo en las coordenadas especificadas
+  // Si el contenedor del mapa no existe, lo creamos y añadimos al cuerpo del documento
+  if (!mapContainer) {
+    mapContainer = document.createElement('div');
+    mapContainer.classList.add('map-container');
+    document.body.appendChild(mapContainer);
+  } else {
+    // Si el contenedor existe, lo limpiamos antes de agregar un nuevo mapa
+    mapContainer.innerHTML = "";
+  }
+
+  // Inicializa el mapa y lo centra en las coordenadas especificadas
   const map = L.map(mapContainer).setView(coords, 13);
 
   // Agrega las teselas de OpenStreetMap al mapa
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
   // Añade un marcador en las coordenadas
   L.marker(coords).addTo(map)
-      .bindPopup('¡Esta es tu ubicación seleccionada!')
-      .openPopup();
+    .bindPopup('¡Esta es tu ubicación seleccionada!')
+    .openPopup();
 }
 
 async function showTreeResults() {
 
-  const code = getCode();
-  const city = getCity();
+  if(!validateInputs()) return;
 
-  if(!isCityValid(city)) {
-    const text = document.createElement('h1');
-    text.innerText = 'Ciudad no valida!!';
-    document.body.append(text);
-    return; // the next code wont execute
-  }
-
-  // is the code is not valid
-  if(!isValidCode(code)) {
-    const text = document.createElement('h1');
-    text.innerText = 'Codigo postal no valido!!';
-    document.body.append(text);
-    return; // the next code wont execute
-  }
-  
   const treesContainer = document.querySelector('.trees-container');
 
   // checking if the results are already displayed
