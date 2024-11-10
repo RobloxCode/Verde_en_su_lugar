@@ -1,4 +1,3 @@
-import { ciudades } from "./data/ciudades.js";
 import { getCelsius } from "./data/kelvin-to-celsius.js";
 import { trees } from "./data/trees.js";
 
@@ -83,7 +82,7 @@ function displayweatherDataInDOM(name, country, temperature, minTemperature, max
   `;
 }
 
-function validateInputs() {
+async function validateInputs() {
   const city = getCity();
   const code = getCode();
 
@@ -92,7 +91,7 @@ function validateInputs() {
     return false;
   }
 
-  if (!isCityValid(city)) {
+  if (!(await checkCityExists(city))) {
     showError('Ciudad no válida!!');
     return false;
   }
@@ -102,16 +101,16 @@ function validateInputs() {
     return false;
   }
 
-  // Si todas las validaciones pasan
   return true;
 }
 
 async function displayWeatherInfo() {
-  if (!validateInputs()) return;
+  if (!(await validateInputs())) return;
 
   const weatherData = await getWeatherData();
   if (!weatherData) return;
 
+  // Extraer y mostrar datos del clima como antes
   const name = weatherData.name;
   const country = weatherData.sys.country;
   const temperature = Math.round(getCelsius(weatherData.main.temp));
@@ -156,10 +155,9 @@ async function getTreesToPlant() {
     let treeMaxTemperature = getTreeMaxTemperature(i);
 
     // asegurar que el arbol pueda soportar las temperaturas minimas y maximas
-    if(treeMinTemperature > cityMinTemperature || treeMaxTemperature < cityMaxTemperature) {
+    if(treeMinTemperature <= cityMinTemperature && treeMaxTemperature >= cityMaxTemperature) {
       treesToPlant.push(trees[i].nombre);
     }
-
   }
 
   return treesToPlant;
@@ -170,8 +168,18 @@ function isValidCode(code) {
   return code.length === 5;
 }
 
-function isCityValid(city) {
-  return ciudades.includes(city.toLowerCase());
+async function checkCityExists(cityName) {
+  
+  const response = await fetch(`https://nominatim.openstreetmap.org/search?city=${cityName}&format=json`);
+  const data = await response.json();
+  
+  if (data.length > 0) {
+    return true;
+  } 
+  else {
+    return false;
+  }
+
 }
 
 function getCity() {
@@ -205,8 +213,7 @@ async function displayMap(coords) {
 
   // Añade un marcador en las coordenadas
   L.marker(coords).addTo(map)
-    .bindPopup('¡Esta es tu ubicación seleccionada!')
-    .openPopup();
+    .bindPopup('¡Esta es tu ubicación seleccionada!');
 }
 
 async function showTreeResults() {
