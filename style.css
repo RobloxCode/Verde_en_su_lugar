@@ -28,7 +28,7 @@ button{
 }
 
 header {
-    background: linear-gradient(to right, #388E3C, #aef7df); /* Gradiente de verde a azul claro */
+    background: linear-gradient(to right, #136217, #58c47a);
     padding: 20px;
     text-align: center;
     color: white;
@@ -62,6 +62,8 @@ nav a:hover {
     border-radius: 5px;
     border-style: solid;
     height: 20px;
+    width: 100%;
+    max-width: 250px;
 }
 
 .show-trees-button{
@@ -74,9 +76,14 @@ nav a:hover {
     transition: 0.15s;
 }
 
-.input-container{
+.input-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     justify-content: center;
     align-items: center;
+    width: 95%;
+    padding: 0 20px;
 }
 
 .tree-name{
