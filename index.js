@@ -39,7 +39,7 @@ function showError(message) {
   // Actualizar el mensaje de error
   errorContainer.innerText = message;
 
-  // Añadir estilo de error (opcional)
+  // Anadir estilo de error (opcional)
   errorContainer.style.color = 'red';
   errorContainer.style.fontSize = '1.2em';
 
@@ -54,7 +54,7 @@ function displayweatherDataInDOM(name, country, temperature, minTemperature, max
 
   let dataContainer = document.querySelector('.data-container');
 
-  // Si el contenedor de datos no existe, lo creamos y añadimos al cuerpo del documento
+  // Si el contenedor de datos no existe, lo creamos y anadimos al cuerpo del documento
   if (!dataContainer) {
     dataContainer = document.createElement('div');
     dataContainer.classList.add('data-container');
@@ -193,7 +193,7 @@ function getCode() {
 async function displayMap(coords) {
   let mapContainer = document.querySelector('.map-container');
 
-  // Si el contenedor del mapa no existe, lo creamos y añadimos al cuerpo del documento
+  // Si el contenedor del mapa no existe, lo creamos y anadimos al cuerpo del documento
   if (!mapContainer) {
     mapContainer = document.createElement('div');
     mapContainer.classList.add('map-container');
@@ -211,7 +211,7 @@ async function displayMap(coords) {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  // Añade un marcador en las coordenadas
+  // Anade un marcador en las coordenadas
   L.marker(coords).addTo(map)
     .bindPopup('¡Esta es tu ubicación seleccionada!');
 }
